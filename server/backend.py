@@ -7,9 +7,19 @@ from requests import get
 from requests import post 
 from json     import loads
 import os
-
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from server.config import special_instructions
 
+
+app = Flask(__name__)
+
+# Initialize the Limiter
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,  # Use the client's IP address to track the rate limit
+    default_limits=["5 per minute"]  # Set a default rate limit of 5 requests per minute
+)
 
 class Backend_Api:
     def __init__(self, app, config: dict) -> None:
@@ -24,6 +34,7 @@ class Backend_Api:
             }
         }
 
+    @limiter.limit("2 per minute")  # Limit this route to 2 requests per minute
     def _conversation(self):
         try:
             jailbreak = request.json['jailbreak']
