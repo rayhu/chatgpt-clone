@@ -72,6 +72,7 @@ class Backend_Api:
                 }, 
                 json    = {
                     'model'             : request.json['model'], 
+                    'temperature'       : 0,
                     'messages'          : conversation,
                     'stream'            : True
                 },
